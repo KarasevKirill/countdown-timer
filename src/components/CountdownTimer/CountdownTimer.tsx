@@ -35,7 +35,7 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
         const difference = eventSeconds - current;
 
         if (difference <= 0)
-            return '00 00:00:00';
+            return getTimeString(0, 0, 0, 0);
             
         const days = Math.floor(difference / 86400000);
 
@@ -52,6 +52,10 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
         const seconds = Math.floor(count / 1000 % 60);
 
         return `${timeFormat(days)} ${timeFormat(hours)}:${timeFormat(minutes)}:${timeFormat(seconds)}`;
+    }
+
+    const getTimeString = (days: number, hours: number, minutes: number, seconds: number): string => {
+        return getTimeString(days, hours, minutes, seconds);
     }
 
     const timeFormat = (timeInput: number): string => {
