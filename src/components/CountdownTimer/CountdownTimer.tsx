@@ -1,45 +1,67 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import classes from './CountdownTimer.module.css';
 
 interface ICountdownTimerProps {
     eventDate: Date;
 }
 
+interface ICalculateDataResult {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+}
+
+const ZERO_TIME = '00 00:00:00';
+
 const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
 
     const [countdownString, setCountdownString] = useState('');
+    const eventMilliseconds = eventDate.valueOf();
 
-    const eventSeconds = eventDate.valueOf();
+    let interval: any;
 
     useEffect(() => {
-
-        const interval = setInterval(() => {
-            const timeString = calculateTime();
+        interval = setInterval(() => {
+            const timeString = getCountdownString();
 
             setCountdownString(timeString);  
         }, 1000);
 
+        return () => {
+            clearInterval(interval as number);
+        };
+    }, [])
+
+    useEffect(() => {
         console.log(countdownString);
+
+        if (countdownString === ZERO_TIME)
+            clearInterval(interval as number);
+
+    }, [countdownString])
+
+    const getCountdownString = (): string => {
         
-        if (countdownString === '00 00:00:00')
-            clearInterval(interval);
-
-        return () => clearInterval(interval);
-    }, [countdownString]);
-
-    const calculateTime = (): string => {
-        let count: number;
-
         const current = Date.now().valueOf();
 
-        const difference = eventSeconds - current;
+        const difference = eventMilliseconds - current;
 
         if (difference <= 0)
-            return getTimeString(0, 0, 0, 0);
+            return ZERO_TIME;
             
-        const days = Math.floor(difference / 86400000);
+        const result = calculateTime(difference);
 
-        count = difference - days * 86400000;
+        return getTimeFormatString({...result});
+    }
+
+    // переименовать в рассчитать остаток
+    const calculateTime = (milliseconds: number): ICalculateDataResult => {
+        let count: number;
+
+        const days = Math.floor(milliseconds / 86400000);
+
+        count = milliseconds - days * 86400000;
 
         const hours = Math.floor(count / 1000 / 60 / 60 % 24);
 
@@ -51,11 +73,16 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
 
         const seconds = Math.floor(count / 1000 % 60);
 
-        return `${timeFormat(days)} ${timeFormat(hours)}:${timeFormat(minutes)}:${timeFormat(seconds)}`;
+        return {
+            days,
+            hours,
+            minutes,
+            seconds
+        };
     }
 
-    const getTimeString = (days: number, hours: number, minutes: number, seconds: number): string => {
-        return getTimeString(days, hours, minutes, seconds);
+    const getTimeFormatString = ({days, hours, minutes, seconds}: ICalculateDataResult): string => {
+        return `${timeFormat(days)} ${timeFormat(hours)}:${timeFormat(minutes)}:${timeFormat(seconds)}`;
     }
 
     const timeFormat = (timeInput: number): string => {
