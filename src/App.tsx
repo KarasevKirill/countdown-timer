@@ -6,9 +6,9 @@ function App() {
     const eventDate = new Date();
     eventDate.setFullYear(2021);
     eventDate.setMonth(10);
-    eventDate.setDate(10);
-    eventDate.setHours(19);
-    eventDate.setMinutes(35);
+    eventDate.setDate(11);
+    eventDate.setHours(23);
+    eventDate.setMinutes(15);
     eventDate.setSeconds(0);
 
     return (

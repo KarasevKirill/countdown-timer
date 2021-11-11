@@ -34,13 +34,18 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
     }, [])
 
     useEffect(() => {
-        console.log(countdownString);
+        //console.log(countdownString);
 
         if (countdownString === ZERO_TIME)
             clearInterval(interval as number);
 
     }, [countdownString])
 
+    /**
+     * Возвращает результат расчета временного промежутка между текущей датой
+     * и датой события в виде строки с указанием количества дней, часов, минут
+     * и секунд
+     */
     const getCountdownString = (): string => {
         
         const current = Date.now().valueOf();
@@ -50,13 +55,15 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
         if (difference <= 0)
             return ZERO_TIME;
             
-        const result = calculateTime(difference);
+        const result = calculateRestOfTime(difference);
 
         return getTimeFormatString({...result});
     }
 
-    // переименовать в рассчитать остаток
-    const calculateTime = (milliseconds: number): ICalculateDataResult => {
+    /**
+     * Рассчитывает количество полученных миллисекунд в днях, часах, минутих и секундах
+     */
+    const calculateRestOfTime = (milliseconds: number): ICalculateDataResult => {
         let count: number;
 
         const days = Math.floor(milliseconds / 86400000);
@@ -81,19 +88,22 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
         };
     }
 
+    /**
+     * Возвращает итоговую строку со значением остатка дней, часов, минут и секунд
+     */
     const getTimeFormatString = ({days, hours, minutes, seconds}: ICalculateDataResult): string => {
         return `${timeFormat(days)} ${timeFormat(hours)}:${timeFormat(minutes)}:${timeFormat(seconds)}`;
     }
 
-    const timeFormat = (timeInput: number): string => {
-        if (timeInput < 10) return `0${timeInput}`;
-
-        return timeInput.toString();
-    }
+    /**
+     * Возвращает полученное число в виде строки с добавленным ведущим нулем
+     * @param time время или дата
+     */
+    const timeFormat = (time: number): string => time < 10 ? `0${time}` : time.toString();
 
     return (
         <div>
-            
+           <p>{countdownString}</p>
         </div>
     ); 
 }
