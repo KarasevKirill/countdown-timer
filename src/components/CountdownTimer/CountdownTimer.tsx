@@ -12,20 +12,26 @@ interface ICalculateDataResult {
     seconds: number;
 }
 
-const ZERO_TIME = '00 00:00:00';
-
 const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
 
-    const [countdownString, setCountdownString] = useState('');
+    const [countdownData, setCountdownData] = useState<ICalculateDataResult>({
+        days: 0, 
+        hours: 0, 
+        minutes: 0, 
+        seconds: 0
+    });
+
+    const [isFirst, setIsFirst] = useState(true);
+
     const eventMilliseconds = eventDate.valueOf();
 
     let interval: any;
 
     useEffect(() => {
         interval = setInterval(() => {
-            const timeString = getCountdownString();
+            const time = getCountdownData();
 
-            setCountdownString(timeString);  
+            setCountdownData(time);  
         }, 1000);
 
         return () => {
@@ -34,34 +40,39 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
     }, [])
 
     useEffect(() => {
-        //console.log(countdownString);
 
-        if (countdownString === ZERO_TIME)
-            clearInterval(interval as number);
+        if (!isFirst) {
+            if (countdownData.days === 0 && countdownData.hours === 0 
+                && countdownData.minutes === 0 && countdownData.seconds === 0)
+                clearInterval(interval as number);
+        }
 
-    }, [countdownString])
+        setIsFirst(false);
+    }, [countdownData])
 
     /**
      * Возвращает результат расчета временного промежутка между текущей датой
-     * и датой события в виде строки с указанием количества дней, часов, минут
-     * и секунд
+     * и датой события с указанием количества дней, часов, минут и секунд
      */
-    const getCountdownString = (): string => {
+    const getCountdownData = (): ICalculateDataResult => {
         
         const current = Date.now().valueOf();
 
         const difference = eventMilliseconds - current;
 
         if (difference <= 0)
-            return ZERO_TIME;
+            return {
+                days: 0,
+                hours: 0,
+                minutes: 0,
+                seconds: 0
+            };
             
-        const result = calculateRestOfTime(difference);
-
-        return getTimeFormatString({...result});
+        return calculateRestOfTime(difference);
     }
 
     /**
-     * Рассчитывает количество полученных миллисекунд в днях, часах, минутих и секундах
+     * Рассчитывает количество полученных миллисекунд в днях, часах, минутах и секундах
      */
     const calculateRestOfTime = (milliseconds: number): ICalculateDataResult => {
         let count: number;
@@ -89,13 +100,6 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
     }
 
     /**
-     * Возвращает итоговую строку со значением остатка дней, часов, минут и секунд
-     */
-    const getTimeFormatString = ({days, hours, minutes, seconds}: ICalculateDataResult): string => {
-        return `${timeFormat(days)} ${timeFormat(hours)}:${timeFormat(minutes)}:${timeFormat(seconds)}`;
-    }
-
-    /**
      * Возвращает полученное число в виде строки с добавленным ведущим нулем
      * @param time время или дата
      */
@@ -103,7 +107,7 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
 
     return (
         <div>
-           <p>{countdownString}</p>
+           <p>{timeFormat(countdownData.days)} {timeFormat(countdownData.hours)}:{timeFormat(countdownData.minutes)}:{timeFormat(countdownData.seconds)}</p>
         </div>
     ); 
 }
