@@ -3,17 +3,28 @@ import CountdownTimer from './components/CountdownTimer/CountdownTimer';
 
 function App() {
 
+    const rnd = Math.floor(Math.random() * 10) + 1;
     const eventDate = new Date();
-    eventDate.setFullYear(2021);
-    eventDate.setMonth(10);
-    eventDate.setDate(14);
+    const date = eventDate.getDate() + rnd;
+
+    eventDate.setDate(date);
     eventDate.setHours(23);
     eventDate.setMinutes(15);
     eventDate.setSeconds(0);
 
+    const eventTitle = 'До начала осталось:';
+
     return (
-        <div className="App">
-            <CountdownTimer eventDate={eventDate} />
+        <div 
+            className="App" 
+            style={{
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                minHeight: '100vh', 
+                minWidth: '100wh'
+            }}>
+            <CountdownTimer eventDate={eventDate} eventTitle={eventTitle} />
         </div>
     );
 }

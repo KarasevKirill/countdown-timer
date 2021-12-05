@@ -3,6 +3,7 @@ import classes from './CountdownTimer.module.css';
 
 interface ICountdownTimerProps {
     eventDate: Date;
+    eventTitle: string;
 }
 
 interface ICalculateDataResult {
@@ -12,7 +13,7 @@ interface ICalculateDataResult {
     seconds: number;
 }
 
-const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
+const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate, eventTitle}) => {
 
     const [countdownData, setCountdownData] = useState<ICalculateDataResult>({
         days: 0, 
@@ -28,10 +29,10 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
     let interval: any;
 
     useEffect(() => {
-        interval = setInterval(() => {
-            const time = getCountdownData();
+        setCountdownData(getCountdownData());
 
-            setCountdownData(time);  
+        interval = setInterval(() => {
+            setCountdownData(getCountdownData());  
         }, 1000);
 
         return () => {
@@ -106,8 +107,8 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate}) => {
     const timeFormat = (time: number): string => time < 10 ? `0${time}` : time.toString();
 
     return (
-        <div>
-           <p>{timeFormat(countdownData.days)} {timeFormat(countdownData.hours)}:{timeFormat(countdownData.minutes)}:{timeFormat(countdownData.seconds)}</p>
+        <div className={classes.container}>
+            <p>{timeFormat(countdownData.days)} дн. {timeFormat(countdownData.hours)}:{timeFormat(countdownData.minutes)}:{timeFormat(countdownData.seconds)}</p>
         </div>
     ); 
 }
