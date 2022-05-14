@@ -1,21 +1,21 @@
 import React, { FC, useEffect, useState } from 'react';
 import classes from './CountdownTimer.module.css';
 
-type ICountdownTimerProps = {
+type CountdownTimerProps = {
     eventDate: Date;
     eventTitle: string;
 }
 
-type ICalculateDataResult = {
+type CalculateDataResult = {
     days: number;
     hours: number;
     minutes: number;
     seconds: number;
 }
 
-const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate, eventTitle}) => {
+const CountdownTimer: FC<CountdownTimerProps> = ({eventDate, eventTitle}) => {
 
-    const [countdownData, setCountdownData] = useState<ICalculateDataResult>({
+    const [countdownData, setCountdownData] = useState<CalculateDataResult>({
         days: 0, 
         hours: 0, 
         minutes: 0, 
@@ -55,7 +55,7 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate, eventTitle}) => {
      * Возвращает результат расчета временного промежутка между текущей датой
      * и датой события с указанием количества дней, часов, минут и секунд
      */
-    const getCountdownData = (): ICalculateDataResult => {
+    const getCountdownData = (): CalculateDataResult => {
         
         const current = Date.now().valueOf();
 
@@ -75,7 +75,7 @@ const CountdownTimer: FC<ICountdownTimerProps> = ({eventDate, eventTitle}) => {
     /**
      * Рассчитывает количество полученных миллисекунд в днях, часах, минутах и секундах
      */
-    const calculateRestOfTime = (milliseconds: number): ICalculateDataResult => {
+    const calculateRestOfTime = (milliseconds: number): CalculateDataResult => {
         let count: number;
 
         const days = Math.floor(milliseconds / 86400000);
