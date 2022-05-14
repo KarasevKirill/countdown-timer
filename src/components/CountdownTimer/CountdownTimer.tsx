@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
 import classes from './CountdownTimer.module.css';
 
-interface ICountdownTimerProps {
+type ICountdownTimerProps = {
     eventDate: Date;
     eventTitle: string;
 }
 
-interface ICalculateDataResult {
+type ICalculateDataResult = {
     days: number;
     hours: number;
     minutes: number;
